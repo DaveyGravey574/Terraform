@@ -1,4 +1,4 @@
-resource "proxmox_vm_qemu" "Test" {
+resource "proxmox_vm_qemu" "Provision-VMs" {
 
     for_each = var.vms
 
@@ -26,10 +26,12 @@ resource "proxmox_vm_qemu" "Test" {
     cipassword = var.root_password
     sshkeys    = var.ssh_public_key
 
-    # Most cloud-init images require a serial device for their display
+    # Serial device for console display in Proxmox Dashboard
     serial {
         id = 0
     }
+    
+    # Disk for Cloud-init drive
     disk {
         storage = "VM-Store"
         type    = "cloudinit"
@@ -37,6 +39,7 @@ resource "proxmox_vm_qemu" "Test" {
         slot    = "scsi1"
     }
 
+    # Disk for VM Storage
     disk {
         storage = "VM-Store"
         type    = each.value.disk_type
@@ -44,6 +47,7 @@ resource "proxmox_vm_qemu" "Test" {
         slot    = each.value.disk_slot
     }
     
+    # Network adapter settings
     network {
         bridge = each.value.bridge
         model  = "virtio"
