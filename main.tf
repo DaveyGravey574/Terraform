@@ -52,4 +52,5 @@ resource "proxmox_vm_qemu" "Provision-VMs" {
         bridge = each.value.bridge
         model  = "virtio"
     }
+
 }
